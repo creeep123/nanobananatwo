@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Header from "@/components/Header";
 
 export const metadata = {
   title: "Best Free AI Image Generator in 2026 - No Cost Text to Image Tools Compared",
@@ -197,8 +196,6 @@ export default function FreeImageGeneratorPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-
-      <Header />
 
       <main>
         {/* Hero Section */}

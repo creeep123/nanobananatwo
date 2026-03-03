@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Header from "@/components/Header";
 
 export const metadata = {
   title: "NanoBanana Free - How to Access NanoBananaTwo Without Paying (2026 Guide)",
@@ -112,8 +111,6 @@ export default function NanoBananaFreePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-
-      <Header />
 
       <main>
         {/* Hero Section */}
