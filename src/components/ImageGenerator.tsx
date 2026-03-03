@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface GenerationOptions {
   prompt: string;
   negativePrompt?: string;
   aspectRatio: "1:1" | "16:9" | "9:16" | "4:3" | "3:4";
   style: string;
-  model: string;
+  imageSize: "1K" | "2K" | "4K";
 }
 
 const EXAMPLE_PROMPTS = [
@@ -58,15 +58,23 @@ const STYLES = [
   "Minimalist",
 ];
 
+const IMAGE_SIZES = [
+  { value: "1K", label: "1K (Default)" },
+  { value: "2K", label: "2K (High Quality)" },
+  { value: "4K", label: "4K (Ultra HD)" },
+];
+
 export default function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [negativePrompt, setNegativePrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState<GenerationOptions["aspectRatio"]>("1:1");
+  const [imageSize, setImageSize] = useState<GenerationOptions["imageSize"]>("1K");
   const [style, setStyle] = useState("No Style");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -76,17 +84,39 @@ export default function ImageGenerator() {
 
     setIsGenerating(true);
     setError(null);
+    setGeneratedImage(null);
 
     try {
-      // For demo purposes, we'll simulate the generation
-      // In production, this would call an actual AI API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+          negativePrompt,
+          aspectRatio,
+          imageSize,
+          style,
+        }),
+      });
 
-      // Simulated response - in production, this would be the actual generated image
-      const demoImage = `https://picsum.photos/seed/${Date.now()}/512/512`;
-      setGeneratedImage(demoImage);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate image");
+      }
+
+      if (data.success && data.imageData) {
+        // Convert base64 to data URL
+        const mimeType = data.mimeType || "image/png";
+        const imageUrl = `data:${mimeType};base64,${data.imageData}`;
+        setGeneratedImage(imageUrl);
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (err) {
-      setError("Failed to generate image. Please try again.");
+      setError(err instanceof Error ? err.message : "Failed to generate image. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -103,6 +133,7 @@ export default function ImageGenerator() {
     setNegativePrompt("");
     setStyle("No Style");
     setAspectRatio("1:1");
+    setImageSize("1K");
     setGeneratedImage(null);
     setError(null);
   };
@@ -111,6 +142,17 @@ export default function ImageGenerator() {
     const randomPrompt = EXAMPLE_PROMPTS[Math.floor(Math.random() * EXAMPLE_PROMPTS.length)];
     setPrompt(randomPrompt.text);
     setStyle(randomPrompt.style);
+  };
+
+  const handleDownload = () => {
+    if (!generatedImage || !imageRef.current) return;
+
+    const link = document.createElement("a");
+    link.href = generatedImage;
+    link.download = `nanobanana2-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -149,8 +191,8 @@ export default function ImageGenerator() {
             </div>
           </div>
 
-          {/* Style and Aspect Ratio */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Style, Aspect Ratio and Image Size */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label htmlFor="style" className="block text-sm font-medium text-foreground mb-2">
                 Style
@@ -184,6 +226,24 @@ export default function ImageGenerator() {
                 <option value="9:16">Portrait (9:16)</option>
                 <option value="4:3">Classic (4:3)</option>
                 <option value="3:4">Portrait Classic (3:4)</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="size" className="block text-sm font-medium text-foreground mb-2">
+                Image Quality
+              </label>
+              <select
+                id="size"
+                value={imageSize}
+                onChange={(e) => setImageSize(e.target.value as GenerationOptions["imageSize"])}
+                className="w-full px-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-foreground bg-white"
+              >
+                {IMAGE_SIZES.map((size) => (
+                  <option key={size.value} value={size.value}>
+                    {size.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -261,7 +321,7 @@ export default function ImageGenerator() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Generating...
+                Generating... (This may take 10-30 seconds)
               </>
             ) : (
               <>
@@ -288,19 +348,26 @@ export default function ImageGenerator() {
         {generatedImage && (
           <div className="mt-6 pt-6 border-t border-border">
             <div className="bg-surface rounded-xl p-4">
-              <div className="aspect-square bg-white rounded-lg overflow-hidden mb-4">
+              <div className="bg-white rounded-lg overflow-hidden mb-4">
                 <img
+                  ref={imageRef}
                   src={generatedImage}
                   alt="Generated image"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto"
                 />
               </div>
               <div className="flex gap-3">
-                <button className="flex-1 bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors text-sm">
+                <button
+                  onClick={handleDownload}
+                  className="flex-1 bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors text-sm"
+                >
                   Download
                 </button>
-                <button className="flex-1 bg-white border border-border text-foreground py-2.5 rounded-lg font-medium hover:border-primary/30 hover:text-primary transition-colors text-sm">
-                  Try in Editor
+                <button
+                  onClick={() => setGeneratedImage(null)}
+                  className="flex-1 bg-white border border-border text-foreground py-2.5 rounded-lg font-medium hover:border-primary/30 hover:text-primary transition-colors text-sm"
+                >
+                  Generate New
                 </button>
               </div>
             </div>
@@ -352,18 +419,10 @@ export default function ImageGenerator() {
             <path d="M12 8h.01" />
           </svg>
           <div className="text-sm text-muted">
-            <p className="font-medium text-foreground mb-1">Demo Mode</p>
+            <p className="font-medium text-foreground mb-1">Powered by NanoBanana2</p>
             <p>
-              This is a demonstration interface. For production use with real NanoBanana2 API,{" "}
-              <a
-                href="https://aistudio.google.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                visit Google AI Studio
-              </a>
-              .
+              Real AI image generation powered by Google&apos;s NanoBanana2 model via APIYI.{" "}
+              Each generation costs approximately $0.03.
             </p>
           </div>
         </div>
