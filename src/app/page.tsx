@@ -194,6 +194,12 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+          {/* Featured Badge */}
+          <div className="mt-8 flex justify-center">
+            <a href="https://showmebest.ai" target="_blank" rel="noopener noreferrer" className="inline-block hover:opacity-80 transition-opacity">
+              <img src="https://showmebest.ai/badge/feature-badge-white.webp" alt="Featured on ShowMeBestAI" width="220" height="60" className="h-auto" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -391,6 +397,94 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Showcase & Guides Section - Internal Linking */}
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+              </svg>
+              Gallery & Tutorials
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+              Get Inspired and Learn More
+            </h2>
+            <p className="mt-4 text-lg text-muted max-w-2xl mx-auto">
+              Browse our showcase gallery of AI-generated images and learn expert prompting techniques.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              href="/showcase"
+              className="group bg-white border-2 border-border hover:border-primary/30 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                Image Showcase Gallery
+              </h3>
+              <p className="text-muted text-sm mb-3">
+                50+ AI-generated examples with copyable prompts. Browse e-commerce, portraits, anime, and marketing visuals.
+              </p>
+              <span className="text-primary text-sm font-semibold inline-flex items-center">
+                Browse Gallery
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+            <Link
+              href="/guides/how-to-use"
+              className="group bg-white border-2 border-border hover:border-primary/30 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                How to Use Guide
+              </h3>
+              <p className="text-muted text-sm mb-3">
+                Step-by-step beginner tutorial for AI image generation. Learn prompt writing from basic to advanced.
+              </p>
+              <span className="text-primary text-sm font-semibold inline-flex items-center">
+                Start Learning
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+            <Link
+              href="/guides/prompt-guide"
+              className="group bg-white border-2 border-border hover:border-primary/30 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9" /><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                Prompt Engineering Guide
+              </h3>
+              <p className="text-muted text-sm mb-3">
+                Master prompt writing techniques. Learn structure, keywords, styles, and advanced prompting methods.
+              </p>
+              <span className="text-primary text-sm font-semibold inline-flex items-center">
+                Master Prompts
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
           </div>
         </div>
       </section>

@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createSupabaseClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface GenerationOptions {
   prompt: string;
@@ -8,6 +11,15 @@ interface GenerationOptions {
   aspectRatio: "1:1" | "16:9" | "9:16" | "4:3" | "3:4";
   style: string;
   imageSize: "1K" | "2K" | "4K";
+}
+
+interface UserCredits {
+  total_credits: number;
+  purchased_credits: number;
+  bonus_credits: number;
+  subscription_credits: number;
+  free_used: number;
+  free_limit: number;
 }
 
 const EXAMPLE_PROMPTS = [
@@ -65,6 +77,13 @@ const IMAGE_SIZES = [
 ];
 
 export default function ImageGenerator() {
+  const router = useRouter();
+  const supabase = createSupabaseClient();
+
+  const [user, setUser] = useState<any>(null);
+  const [credits, setCredits] = useState<UserCredits | null>(null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
   const [prompt, setPrompt] = useState("");
   const [negativePrompt, setNegativePrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState<GenerationOptions["aspectRatio"]>("1:1");
@@ -76,9 +95,75 @@ export default function ImageGenerator() {
   const [error, setError] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
+  // Check authentication and fetch credits
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session?.user) {
+        setUser(session.user);
+
+        // Fetch user credits
+        const { data: creditsData } = await supabase
+          .from("nb2_user_credits")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single();
+
+        setCredits(creditsData);
+      }
+
+      setIsLoadingAuth(false);
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+
+        // Fetch credits when auth state changes
+        supabase
+          .from("nb2_user_credits")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single()
+          .then(({ data }) => {
+            setCredits(data);
+          });
+      } else {
+        setUser(null);
+        setCredits(null);
+      }
+      setIsLoadingAuth(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  // Calculate available credits
+  const freeRemaining = credits ? Math.max(0, credits.free_limit - credits.free_used) : 0;
+  const totalCredits = credits ? credits.total_credits : 0;
+  const hasFreeCredits = freeRemaining > 0;
+  const hasPurchasedCredits = totalCredits > 0;
+
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       setError("Please enter a description");
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!user) {
+      setError("Please sign in to generate images");
+      router.push("/auth/login?redirect=/");
+      return;
+    }
+
+    // Check if user has credits
+    if (!hasFreeCredits && !hasPurchasedCredits) {
+      setError("You've used all your free generations. Please purchase credits to continue.");
       return;
     }
 
@@ -98,6 +183,7 @@ export default function ImageGenerator() {
           aspectRatio,
           imageSize,
           style,
+          userId: user.id,
         }),
       });
 
@@ -112,6 +198,15 @@ export default function ImageGenerator() {
         const mimeType = data.mimeType || "image/png";
         const imageUrl = `data:${mimeType};base64,${data.imageData}`;
         setGeneratedImage(imageUrl);
+
+        // Update credits locally
+        if (credits) {
+          setCredits({
+            ...credits,
+            total_credits: credits.total_credits - 1,
+            free_used: hasFreeCredits ? credits.free_used + 1 : credits.free_used,
+          });
+        }
       } else {
         throw new Error("Invalid response from server");
       }
@@ -157,6 +252,77 @@ export default function ImageGenerator() {
 
   return (
     <div className="w-full">
+      {/* Credits Display Banner */}
+      {!isLoadingAuth && user && credits && (
+        <div className="mb-4 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🎁</span>
+                <div>
+                  <p className="text-xs text-muted">Free Generations</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {freeRemaining} / {credits.free_limit}
+                  </p>
+                </div>
+              </div>
+              {totalCredits > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">💳</span>
+                  <div>
+                    <p className="text-xs text-muted">Purchased Credits</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {totalCredits}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/dashboard"
+                className="text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                Dashboard
+              </Link>
+              {!hasFreeCredits && !hasPurchasedCredits && (
+                <Link
+                  href="/pricing"
+                  className="text-sm bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+                >
+                  Get More Credits
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign In Prompt */}
+      {!isLoadingAuth && !user && (
+        <div className="mb-4 bg-primary/5 border border-primary/10 rounded-xl p-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">👋</span>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Sign in to get 3 free image generations!
+                </p>
+                <p className="text-xs text-muted">
+                  No credit card required
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/auth/login"
+              className="text-sm bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Main Generator Interface */}
       <div className="bg-white border border-border rounded-2xl p-6 shadow-sm">
         {/* Prompt Input */}
@@ -422,7 +588,12 @@ export default function ImageGenerator() {
             <p className="font-medium text-foreground mb-1">Powered by NanoBanana2</p>
             <p>
               Real AI image generation powered by Google&apos;s NanoBanana2 model via APIYI.{" "}
-              Each generation costs approximately $0.03.
+              {user && credits && freeRemaining > 0
+                ? `You have ${freeRemaining} free generation${freeRemaining > 1 ? 's' : ''} remaining.`
+                : !user
+                ? "Sign up now to get 3 free image generations!"
+                : "Purchase credit packs or subscribe for more generations."
+              }
             </p>
           </div>
         </div>

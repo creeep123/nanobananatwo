@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 
 const APIYI_API_KEY = process.env.APIYI_API_KEY || "sk-UlpYk69776Sk7WDEAa689dF6Da3748E486923265831d7dAf";
 const APIYI_ENDPOINT = "https://api.apiyi.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent";
@@ -31,8 +36,9 @@ const IMAGE_SIZE_MAP: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient();
     const body = await req.json();
-    const { prompt, negativePrompt, aspectRatio = "1:1", imageSize = "1K", style = "" } = body;
+    const { prompt, negativePrompt, aspectRatio = "1:1", imageSize = "1K", style = "", userId } = body;
 
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json(
@@ -40,6 +46,52 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Verify user authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Verify userId matches authenticated user
+    if (userId !== user.id) {
+      return NextResponse.json(
+        { error: "Invalid user" },
+        { status: 403 }
+      );
+    }
+
+    // Get user credits
+    const { data: credits, error: creditsError } = await supabase
+      .from("nb2_user_credits")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (creditsError || !credits) {
+      return NextResponse.json(
+        { error: "Unable to verify credits" },
+        { status: 500 }
+      );
+    }
+
+    // Check if user has free credits remaining
+    const freeRemaining = Math.max(0, credits.free_limit - credits.free_used);
+    const hasFreeCredits = freeRemaining > 0;
+    const hasPurchasedCredits = credits.total_credits > 0;
+
+    if (!hasFreeCredits && !hasPurchasedCredits) {
+      return NextResponse.json(
+        { error: "No credits remaining. Please purchase credits to continue." },
+        { status: 402 }
+      );
+    }
+
+    // Determine which credit type to use (free first, then purchased)
+    const useFreeCredit = hasFreeCredits;
 
     // Build the full prompt with style if provided
     let fullPrompt = prompt;
@@ -116,6 +168,55 @@ export async function POST(req: NextRequest) {
     }
 
     // Return the base64 image data
+    // Deduct credits and save generation record
+    try {
+      // Determine new credit values
+      const newFreeUsed = useFreeCredit ? credits.free_used + 1 : credits.free_used;
+      const newTotalCredits = useFreeCredit ? credits.total_credits : credits.total_credits - 1;
+
+      // Update user credits
+      await supabase
+        .from("nb2_user_credits")
+        .update({
+          total_credits: newTotalCredits,
+          free_used: newFreeUsed,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", user.id);
+
+      // Record the credit transaction
+      await supabase
+        .from("nb2_credit_transactions")
+        .insert({
+          user_id: user.id,
+          amount: -1,
+          type: useFreeCredit ? "free_trial" : "generation",
+          balance_after: newTotalCredits,
+          description: useFreeCredit ? "Free trial generation" : "Image generation",
+          metadata: {
+            model: "NanoBanana2",
+            prompt: prompt.substring(0, 100),
+          },
+        });
+
+      // Save generation record (without image URL for now - client has base64)
+      await supabase
+        .from("nb2_generations")
+        .insert({
+          user_id: user.id,
+          prompt,
+          negative_prompt: negativePrompt,
+          aspect_ratio: aspectRatio,
+          image_size: imageSize,
+          style,
+          model_used: "gemini-3.1-flash-image-preview",
+          credits_cost: 1,
+        });
+    } catch (dbError) {
+      console.error("Error updating credits:", dbError);
+      // Don't fail the request if credit update fails
+    }
+
     return NextResponse.json({
       success: true,
       imageData: imageData,

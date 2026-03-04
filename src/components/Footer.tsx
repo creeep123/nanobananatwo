@@ -68,42 +68,61 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
+                  href="/showcase"
+                  className="text-muted hover:text-primary transition-colors"
+                >
+                  Image Gallery
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides/how-to-use"
+                  className="text-muted hover:text-primary transition-colors"
+                >
+                  How to Use Guide
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides/prompt-guide"
+                  className="text-muted hover:text-primary transition-colors"
+                >
+                  Prompt Guide
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides/free-alternatives"
+                  className="text-muted hover:text-primary transition-colors"
+                >
+                  Free Alternatives
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/nanobananatwo-alternatives"
                   className="text-muted hover:text-primary transition-colors"
                 >
                   Compare Alternatives
                 </Link>
               </li>
-              <li>
-                <a
-                  href="https://aistudio.google.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted hover:text-primary transition-colors"
-                >
-                  Google AI Studio
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://deepmind.google/technologies/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted hover:text-primary transition-colors"
-                >
-                  Google DeepMind
-                </a>
-              </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-10 pt-6 border-t border-border text-center text-xs text-muted-light">
+        <div className="mt-10 pt-6 border-t border-border text-center text-xs text-muted-light space-y-2">
           <p>
             &copy; {new Date().getFullYear()} NanoBananaTwo.com. This site is not
             affiliated with Google. NanoBanana2 is a trademark of Google LLC.
           </p>
+          <a
+            href="https://topai.tools"
+            rel="dofollow"
+            className="text-muted-light hover:text-primary transition-colors"
+          >
+            Listed on <span>TopAI.tools</span>
+          </a>
         </div>
       </div>
     </footer>

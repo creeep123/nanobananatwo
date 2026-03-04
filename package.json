@@ -6,13 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:local:start": "supabase start",
+    "db:local:stop": "supabase stop",
+    "db:local:reset": "supabase db reset",
+    "db:local:types": "supabase gen types typescript --local > src/types/database.ts",
+    "db:link": "supabase link --project-ref roruthlntnpjtfardmte",
+    "db:push": "supabase db push",
+    "db:remote:types": "supabase gen types typescript --linked > src/types/database.ts"
   },
   "dependencies": {
     "@microsoft/clarity": "^1.0.2",
-    "next": "16.1.6",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "next": "^15.5.12",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "stripe": "^20.4.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,8 +31,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^15.5.12",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
