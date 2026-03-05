@@ -401,6 +401,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Visual Showcase Gallery - Example Images */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+              Created with NanoBananaTwo
+            </h2>
+            <p className="mt-3 text-muted">
+              Explore stunning AI-generated images from our community
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { id: "ecommerce-1", title: "Luxury Perfume", prompt: "A luxury perfume bottle with gold accents" },
+              { id: "portrait-2", title: "Fantasy Character", prompt: "Elegant elven warrior with ornate armor" },
+              { id: "anime-1", title: "Anime Portrait", prompt: "Beautiful anime girl with cherry blossoms" },
+              { id: "marketing-4", title: "App Launch", prompt: "Mobile app launch promotional image" },
+            ].map((example) => (
+              <Link
+                key={example.id}
+                href="/showcase"
+                className="group relative aspect-square rounded-xl overflow-hidden hover:shadow-xl hover:shadow-primary/20 transition-all duration-300"
+              >
+                <img
+                  src={`/showcase/${example.id}.webp`}
+                  alt={example.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <p className="text-white text-sm font-medium truncate">{example.title}</p>
+                    <p className="text-white/70 text-xs truncate">{example.prompt}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              href="/showcase"
+              className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+            >
+              View All 50+ Examples
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Showcase & Guides Section - Internal Linking */}
       <section className="py-16 sm:py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

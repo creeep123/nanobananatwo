@@ -20,24 +20,28 @@ const categories = [
         title: "Luxury Perfume Bottle",
         prompt: "A luxury perfume bottle with gold accents, placed on a marble surface with soft rose petals scattered around, golden hour lighting, bokeh background, photorealistic, 4K",
         category: "Product Photography",
+        imageId: "ecommerce-1",
         gradient: "from-amber-100 to-orange-100",
       },
       {
         title: "Sneaker Product Shot",
         prompt: "White athletic sneaker floating in mid-air against a vibrant gradient background, studio lighting, product photography, clean composition, 4K",
         category: "Product Photography",
+        imageId: "ecommerce-2",
         gradient: "from-blue-100 to-cyan-100",
       },
       {
         title: "Skincare Set",
         prompt: "Elegant skincare bottles on a wooden tray with eucalyptus leaves, natural morning light, minimal composition, clean aesthetic, commercial product photography",
         category: "Beauty & Cosmetics",
+        imageId: "ecommerce-3",
         gradient: "from-green-100 to-emerald-100",
       },
       {
         title: "Tech Device",
         prompt: "Sleek smartphone on a reflective surface with floating abstract 3D shapes, dramatic lighting, tech product photography, premium feel, 8K",
         category: "Technology",
+        imageId: "ecommerce-4",
         gradient: "from-purple-100 to-violet-100",
       },
     ],
@@ -57,24 +61,28 @@ const categories = [
         title: "Professional Portrait",
         prompt: "Professional headshot of a confident business executive, natural lighting, shallow depth of field, modern office background, photorealistic, 8K",
         category: "Professional",
+        imageId: "portrait-1",
         gradient: "from-slate-100 to-gray-100",
       },
       {
         title: "Fantasy Character",
         prompt: "Elegant elven warrior with silver hair and ornate armor, standing in an ancient forest, cinematic lighting, fantasy art style, detailed, 8K",
         category: "Fantasy",
+        imageId: "portrait-2",
         gradient: "from-emerald-100 to-teal-100",
       },
       {
         title: "Cyberpunk Character",
         prompt: "Cyberpunk hacker character with neon implants, rain-soaked city street background, blade runner style, cinematic lighting, hyper-detailed, 4K",
         category: "Sci-Fi",
+        imageId: "portrait-3",
         gradient: "from-pink-100 to-purple-100",
       },
       {
         title: "Gaming Avatar",
         prompt: "Stylized gaming profile picture, confident smile with headphones, vibrant color palette, clean background, modern illustration style",
         category: "Gaming",
+        imageId: "portrait-4",
         gradient: "from-indigo-100 to-blue-100",
       },
     ],
@@ -96,24 +104,28 @@ const categories = [
         title: "Anime Portrait",
         prompt: "Beautiful anime girl with long flowing hair, cherry blossom petals falling, vibrant colors, manga style, detailed eyes, Studio Ghibli inspired",
         category: "Portrait",
+        imageId: "anime-1",
         gradient: "from-pink-100 to-rose-100",
       },
       {
         title: "Chibi Character",
         prompt: "Cute chibi version of a fantasy knight, small proportions, big eyes, kawaii style, soft pastel colors, simple background",
         category: "Chibi",
+        imageId: "anime-2",
         gradient: "from-purple-100 to-fuchsia-100",
       },
       {
         title: "Manga Action Scene",
         prompt: "Dynamic manga action scene, warrior mid-jump with sword, speed lines, dramatic perspective, black and white manga style with accent colors",
         category: "Action",
+        imageId: "anime-3",
         gradient: "from-slate-200 to-gray-200",
       },
       {
         title: "Ghibli Landscape",
         prompt: "Whimsical Japanese countryside scene, traditional house with cherry blossoms, peaceful atmosphere, Studio Ghibli art style, watercolor texture",
         category: "Landscape",
+        imageId: "anime-4",
         gradient: "from-green-100 to-lime-100",
       },
     ],
@@ -134,24 +146,28 @@ const categories = [
         title: "Summer Sale Banner",
         prompt: "Vibrant summer sale banner, beach theme with palm leaves and waves, bold typography placeholder, warm sunny colors, marketing graphic, high contrast",
         category: "Seasonal Sale",
+        imageId: "marketing-1",
         gradient: "from-yellow-100 to-amber-100",
       },
       {
         title: "Black Friday Deal",
         prompt: "Black Friday promotional image, shopping bags and gift boxes, luxury aesthetic, gold and black color scheme, premium feel, marketing visual",
         category: "Sale Event",
+        imageId: "marketing-2",
         gradient: "from-gray-200 to-slate-300",
       },
       {
         title: "Social Media Post",
         prompt: "Instagram carousel background, motivational quote placeholder, modern gradient design, clean aesthetic, influencer style, social media ready",
         category: "Social Media",
+        imageId: "marketing-3",
         gradient: "from-violet-100 to-purple-100",
       },
       {
         title: "App Launch Visual",
         prompt: "Mobile app launch promotional image, floating 3D phone mockup, abstract colorful shapes, tech startup aesthetic, modern and dynamic",
         category: "App Launch",
+        imageId: "marketing-4",
         gradient: "from-blue-100 to-indigo-100",
       },
     ],
@@ -267,64 +283,48 @@ export default function ShowcaseClient() {
                     key={idx}
                     className="group bg-white border border-border rounded-2xl overflow-hidden hover:shadow-xl hover:border-primary/20 transition-all duration-300"
                   >
-                    {/* Image Preview Placeholder */}
-                    <div className={`aspect-video bg-gradient-to-br ${example.gradient} flex items-center justify-center relative overflow-hidden`}>
-                      <div className="text-center p-8">
-                        <div className="w-16 h-16 bg-white/80 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                          <svg
-                            className="w-8 h-8 text-primary"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                    {/* Image Preview with Real Image */}
+                    <div className="aspect-video relative overflow-hidden group bg-gradient-to-br from-surface to-surface/50">
+                      <img
+                        src={`/showcase/${example.imageId}.webp`}
+                        alt={example.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute bottom-0 left-0 right-0 p-4">
+                          <Link
+                            href={`/?prompt=${encodeURIComponent(example.prompt)}`}
+                            className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
                           >
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <circle cx="9" cy="9" r="2"/>
-                            <path d="m21 15-3.086-3.086a2 2 0 00-2.828 0L6 21"/>
-                          </svg>
+                            <svg
+                              className="w-4 h-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                            </svg>
+                            Try This Prompt
+                          </Link>
                         </div>
-                        <p className="text-sm font-medium text-foreground/80">
-                          {example.title}
-                        </p>
-                        <p className="text-xs text-muted mt-1">
-                          {example.category}
-                        </p>
                       </div>
-                      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Link
-                          href={`/?prompt=${encodeURIComponent(example.prompt)}`}
-                          className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M21 12a9 9 0 11-6.219-8.56"/>
-                          </svg>
-                          Try This Prompt
-                        </Link>
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-foreground shadow-sm">
+                          {example.category}
+                        </span>
                       </div>
                     </div>
 
                     {/* Prompt Section */}
                     <div className="p-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold text-foreground">
-                          {example.title}
-                        </h3>
-                        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-surface text-muted">
-                          {example.category}
-                        </span>
-                      </div>
+                      <h3 className="font-semibold text-foreground mb-3">
+                        {example.title}
+                      </h3>
                       <div className="bg-surface rounded-xl p-4 relative group/prompt">
                         <p className="text-sm text-muted leading-relaxed pr-10">
                           {example.prompt}
