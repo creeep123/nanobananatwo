@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style={{stopColor:"#8B5CF6",stopOpacity:1}} />
+      <stop offset="100%" style={{stopColor:"#6366F1",stopOpacity:1}} />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="40" rx="8" fill="url(#logoGrad)"/>
+  <circle cx="18" cy="20" r="6" fill="white"/>
+  <circle cx="18" cy="18" r="1" fill="#8B5CF6"/>
+  <circle cx="22" cy="18" r="1" fill="#8B5CF6"/>
+  <path d="M13 24 Q18 28 23 24" stroke="white" strokeWidth="2" fill="none" stroke-linecap="round"/>
+  <text x="38" y="26" font-size="12" font-weight="bold" fill="white" font-family="Arial, sans-serif">NB2</text>
+</svg>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createSupabaseClient } from "@/lib/supabase/client";
+import { LogoSVG, LogoIcon } from "./Logo";
 
 export default function Header() {
   const supabase = createSupabaseClient();
@@ -52,13 +53,8 @@ export default function Header() {
     <header className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-primary">
-            NanoBananaTwo
-          </span>
-          <span className="hidden sm:inline-block text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-            AI Generator
-          </span>
+        <Link href="/" className="flex items-center gap-3" aria-label="NanoBananaTwo Home">
+          <LogoSVG className="w-10 h-auto" />
         </Link>
 
         {/* Desktop Navigation */}

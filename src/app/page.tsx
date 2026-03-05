@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ImageGenerator from "@/components/ImageGenerator";
 import ScrollToTop from "@/components/ScrollToTop";
+import { LogoLarge } from "@/components/Logo";
 
 export const metadata: Metadata = {
   title: "NanoBananaTwo - Free AI Image Generator & Editor Online",
@@ -149,6 +150,11 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title & Description */}
           <div className="text-center mb-10">
+            {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <LogoLarge className="w-48 h-auto sm:w-56 md:w-64" />
+            </div>
+
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
               <svg
                 className="w-4 h-4"
@@ -164,9 +170,8 @@ export default function HomePage() {
               </svg>
               Powered by Google Gemini
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-tight">
-              NanoBananaTwo
-              <span className="block text-primary mt-2">AI Image Generator</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-tight mb-3">
+              AI Image Generator
             </h1>
             <p className="mt-5 text-lg sm:text-xl text-muted max-w-2xl mx-auto leading-relaxed">
               Create stunning images instantly with Google&apos;s fastest AI model.

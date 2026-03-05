@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <defs>
+    <linearGradient id="largeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style={{stopColor:"#8B5CF6",stopOpacity:1}} />
+      <stop offset="100%" style={{stopColor:"#6366F1",stopOpacity:1}} />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="60" rx="12" fill="url(#largeGrad)"/>
+  <circle cx="30" cy="30" r="10" fill="white"/>
+  <circle cx="30" cy="27" r="2" fill="#8B5CF6"/>
+  <circle cx="35" cy="27" r="2" fill="#8B5CF6"/>
+  <path d="M20 38 Q30 44 40 38" stroke="white" strokeWidth="3" fill="none" stroke-linecap="round"/>
+  <text x="60" y="38" font-size="20" font-weight="bold" fill="white" font-family="Arial, sans-serif">NanoBananaTwo</text>
+</svg>
