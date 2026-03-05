@@ -35,6 +35,16 @@ export const metadata: Metadata = {
     "Gemini image generation",
     "free AI image tool",
   ],
+  icons: {
+    icon: [
+      { url: '/icons/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icons/favicon-32x32.svg', sizes: '32x32', type: 'image/svg+xml' },
+      { url: '/icons/favicon-16x16.svg', sizes: '16x16', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.svg', sizes: '180x180', type: 'image/svg+xml' },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -43,12 +53,21 @@ export const metadata: Metadata = {
     title: "NanoBananaTwo - Free AI Image Generator & Editor Online",
     description:
       "Your complete guide to Google's next-gen AI image generation model. Generate, edit, and enhance images with NanoBanana2.",
+    images: [
+      {
+        url: '/screenshots/homepage-hero.png',
+        width: 1920,
+        height: 1080,
+        alt: 'NanoBananaTwo AI Image Generator Homepage',
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "NanoBananaTwo - Free AI Image Generator & Editor Online",
     description:
       "Your complete guide to Google's next-gen AI image generation model. Generate, edit, and enhance images with NanoBanana2.",
+    images: ['/screenshots/homepage-hero.png'],
   },
   alternates: {
     canonical: "https://nanobananatwo.com",
